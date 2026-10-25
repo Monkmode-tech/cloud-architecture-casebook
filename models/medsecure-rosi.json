@@ -1,0 +1,11 @@
+{
+  "name": "MedSecure Commerce: 3-year security program",
+  "sle": 7420000,
+  "sle_source": "IBM Cost of a Data Breach 2025, healthcare average",
+  "aro": 0.15,
+  "effectiveness": 0.5,
+  "investment": 490000,
+  "years": 3,
+  "grid_aro": [0.02, 0.05, 0.10, 0.20, 0.30],
+  "grid_effectiveness": [0.3, 0.5, 0.7]
+}

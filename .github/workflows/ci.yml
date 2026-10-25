@@ -1,0 +1,64 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  models:
+    name: models, generated docs, links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - name: ruff (lint)
+        run: ruff check tools tests
+      - name: unit tests
+        run: python -m unittest discover -s tests -v
+      - name: generated tables match the models
+        run: python -m tools.build --check
+      - name: relative links resolve
+        run: python -m tools.check_links
+
+  diagrams:
+    name: Mermaid diagrams render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: render every mermaid block
+        run: |
+          npm install --no-save --no-package-lock @mermaid-js/mermaid-cli@11 >/dev/null
+          echo '{"args":["--no-sandbox"]}' > puppeteer.json
+          mkdir -p out
+          python3 - <<'PY'
+          import pathlib, re
+          n = 0
+          for md in sorted(pathlib.Path(".").rglob("*.md")):
+              if "node_modules" in md.parts:
+                  continue
+              for block in re.findall(r"```mermaid\n(.*?)```", md.read_text(), re.S):
+                  n += 1
+                  pathlib.Path(f"out/{n:02d}-{md.stem}.mmd").write_text(block)
+          print(f"{n} diagrams")
+          PY
+          fail=0
+          for f in out/*.mmd; do
+            if ! npx mmdc -p puppeteer.json -i "$f" -o "${f%.mmd}.svg" >/dev/null 2>err.txt; then
+              echo "::error title=mermaid::$f failed: $(head -3 err.txt | tr '\n' ' ')"; fail=1
+            fi
+          done
+          exit $fail

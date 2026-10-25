@@ -1,0 +1,61 @@
+{
+  "name": "MedTech Solutions: 3-year TCO, stay vs migrate",
+  "target_saving_pct": 0.20,
+  "data_tb": 200,
+  "data_growth": 0.22,
+  "on_prem": {
+    "hardware_refresh_capex": 600000,
+    "hardware_life_years": 5,
+    "storage_cost_per_tb": 1200,
+    "facilities_per_year": 180000,
+    "network_per_year": 90000,
+    "licenses_per_year": 150000,
+    "ops_fte": 6,
+    "fte_loaded_cost": 140000
+  },
+  "cloud": {
+    "instances": 96,
+    "avg_instance_monthly": 140,
+    "savings_plan_discount": 0.30,
+    "savings_plan_coverage": [0.3, 0.7, 0.8],
+    "storage_tiers": [
+      {"name": "EBS gp3 (databases, app volumes)", "share": 0.15, "usd_per_gb_month": 0.08},
+      {"name": "S3 Standard (active documents)", "share": 0.25, "usd_per_gb_month": 0.023},
+      {"name": "S3 Glacier Instant Retrieval (imaging archive)", "share": 0.60, "usd_per_gb_month": 0.004}
+    ],
+    "egress_tb_per_month": 10,
+    "egress_usd_per_gb": 0.09,
+    "backup_share": 0.4,
+    "backup_usd_per_gb_month": 0.05,
+    "network_per_year": 60000,
+    "security_ops_share": 0.10,
+    "support_share": 0.07,
+    "saas_per_year": 120000,
+    "ops_fte": 4.5,
+    "migration_one_time": 450000,
+    "dual_running_share": [0.7, 0.2, 0.0]
+  },
+  "assumptions": [
+    ["data_tb, data_growth", "200 TB growing 20-25%/yr (coursework: MedTech current state); 22% used"],
+    ["hardware_refresh_capex", "12 virtualization hosts + SAN controllers + switches due for refresh (aging infrastructure), ~$600k over a 5-year life"],
+    ["storage_cost_per_tb", "Enterprise SAN, ~$1,200 per usable TB over 5 years"],
+    ["facilities_per_year", "Two data centers: space, power, cooling, physical security"],
+    ["licenses_per_year", "Virtualization, backup, OS and monitoring licenses (virtualization pricing rose sharply after 2024)"],
+    ["ops_fte 6 -> 4.5", "Infrastructure staff; cloud removes hardware/facility work but adds platform, FinOps and security work - a 25% reduction, not 50%"],
+    ["instances 96", "120 VMs minus retired tools (10% of apps) and the billing system moved to SaaS (Repurchase)"],
+    ["avg_instance_monthly $140", "Blended on-demand price after rightsizing (mix of 2-4 vCPU instances, some Windows)"],
+    ["savings_plan 30% at 30/70/80% coverage", "1-year Compute Savings Plans bought only once usage is measured (coursework: 'no commitment until baseline known')"],
+    ["storage tiers", "Imaging archive is 60% of data and needs millisecond access, so Glacier Instant Retrieval rather than Deep Archive"],
+    ["egress 10 TB/month", "Telehealth, image viewing by referring clinics, partner feeds"],
+    ["security_ops 10%, support 7%", "GuardDuty, Security Hub, Config, CloudTrail, CloudWatch; Business support tier"],
+    ["migration_one_time $450k", "Partner assistance, training (coursework resource plan), migration tooling, extra testing"],
+    ["dual_running 70% / 20% / 0%", "Data centers can't be switched off until the last wave (18-month roadmap); staff counted once"]
+  ],
+  "sensitivity": [
+    {"label": "Cloud ops staff stays at 6 FTE vs drops to 4", "path": ["cloud", "ops_fte"], "values": [6, 4]},
+    {"label": "No Savings Plans vs aggressive coverage (50/90/90%)", "path": ["cloud", "savings_plan_coverage"], "values": [[0, 0, 0], [0.5, 0.9, 0.9]]},
+    {"label": "Migration one-time cost $700k vs $300k", "path": ["cloud", "migration_one_time"], "values": [700000, 300000]},
+    {"label": "Slow exit (90/40/10% dual running) vs fast (50/10/0%)", "path": ["cloud", "dual_running_share"], "values": [[0.9, 0.4, 0.1], [0.5, 0.1, 0.0]]},
+    {"label": "Data growth 30%/yr vs 15%/yr", "path": ["data_growth"], "values": [0.30, 0.15]}
+  ]
+}

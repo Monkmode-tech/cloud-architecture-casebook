@@ -1,0 +1,71 @@
+{
+  "_sources": {
+    "Elastic Load Balancing": "https://aws.amazon.com/elasticloadbalancing/sla/ (99.99%, load balancer in 2+ AZs)",
+    "DynamoDB": "https://aws.amazon.com/dynamodb/sla/ (99.99% standard tables, 99.999% global tables)",
+    "Others": "AWS service SLA pages as summarized at https://www.ernestchiang.com/en/notes/aws/product-list-sla/ (checked October 2026)"
+  },
+  "scenarios": [
+    {
+      "name": "Three-tier web app, one region (portfolio P1)",
+      "target": 99.9,
+      "regions": 1,
+      "components": [
+        {"name": "ALB", "sla": 99.99},
+        {"name": "ECS on Fargate", "sla": 99.99},
+        {"name": "RDS Multi-AZ", "sla": 99.95}
+      ]
+    },
+    {
+      "name": "Financial portal, one region (Case 4)",
+      "target": 99.99,
+      "regions": 1,
+      "components": [
+        {"name": "Route 53", "sla": 100},
+        {"name": "ALB", "sla": 99.99},
+        {"name": "ECS on Fargate", "sla": 99.99},
+        {"name": "Aurora", "sla": 99.99}
+      ]
+    },
+    {
+      "name": "Financial portal, two regions (Case 4)",
+      "target": 99.99,
+      "regions": 2,
+      "components": [
+        {"name": "Route 53", "sla": 100},
+        {"name": "ALB", "sla": 99.99},
+        {"name": "ECS on Fargate", "sla": 99.99},
+        {"name": "Aurora", "sla": 99.99}
+      ]
+    },
+    {
+      "name": "Serverless API, one region",
+      "target": 99.95,
+      "regions": 1,
+      "components": [
+        {"name": "API Gateway", "sla": 99.95},
+        {"name": "Lambda", "sla": 99.95},
+        {"name": "DynamoDB global table", "sla": 99.999}
+      ]
+    },
+    {
+      "name": "Serverless warm standby, two regions (portfolio P3)",
+      "target": 99.95,
+      "regions": 2,
+      "components": [
+        {"name": "API Gateway", "sla": 99.95},
+        {"name": "Lambda", "sla": 99.95},
+        {"name": "DynamoDB global table", "sla": 99.999}
+      ]
+    },
+    {
+      "name": "Internal timesheet app, one region (portfolio P6)",
+      "target": 99.5,
+      "regions": 1,
+      "components": [
+        {"name": "API Gateway", "sla": 99.95},
+        {"name": "Lambda", "sla": 99.95},
+        {"name": "DynamoDB", "sla": 99.99}
+      ]
+    }
+  ]
+}

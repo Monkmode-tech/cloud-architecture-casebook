@@ -95,7 +95,7 @@ known weakness, ranked, with the fix.
 
 ## Background
 
-Built by **Caleb Tetteh** (M.S. Cloud Computing Systems, UMGC; B.S. Computer Science, Georgia Tech).
+Built by **Caleb Tetteh** (M.S. Cloud Computing, UMGC; B.S. Computer Science, Georgia Tech).
 The cases come from my coursework: CLCS 615 *Cloud Services and Technologies*, CLCS 625
 *Applications of Cloud Computing* and CLCS 645 *Cloud Infrastructure Planning and Design*. Each is
 revised with models, current pricing and the lessons from building the rest of this portfolio.
